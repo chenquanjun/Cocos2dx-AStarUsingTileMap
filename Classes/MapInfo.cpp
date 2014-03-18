@@ -42,7 +42,7 @@ bool MapInfo::init(const std::string& filename){
     auto layer = map->getLayer("background");
     
     _mapGridSize = layer->getLayerSize();//地图大小
- 
+    
     //所有对象
     auto& objects = objectGrp->getObjects();
     
@@ -62,9 +62,9 @@ bool MapInfo::init(const std::string& filename){
         float y = dict["y"].asFloat() / _pointSize.height;
         
         int objectId = dict["objectid"].asInt();
-
+        
         int mapId = x + y * _mapGridSize.width;
-  
+        
         mapType[mapId] = objectId;//id对应类型
     }
     
@@ -133,7 +133,7 @@ Point MapInfo::convertIdToPoint(int mapId){
     if (mapId >= 0 && mapId < _mapInfoTypeVec.size()) {
         int y = (mapId / (int)_mapGridSize.width); //y坐标
         int x = (mapId - y * _mapGridSize.width) ; //x坐标
-
+        
         point = Point(x  * _pointSize.width, y * _pointSize.height);
     }
     return point;
@@ -263,15 +263,15 @@ MapPath* MapInfo::findPath(){
     //此处生成的是逆向的的array
     while (pNode)
     {
-     
+        
         int mapId = pNode->nIndex;
         Point point = this->convetIdToPointMid(mapId);//map id 转换成 网格中点坐标
-
+        
         pathArr->addControlPoint(point);
         
         pNode = pNode->pParent;//此处变成逆向
     }
-
+    
     
     //逆向路径
     MapPath* pathRevert = MapPath::create(m_nEndIndex, m_nStartIndex , pathArr);
@@ -279,7 +279,7 @@ MapPath* MapInfo::findPath(){
     
     int keyRevert = m_nEndIndex * m_nKeyOffset + m_nStartIndex;
     int key = m_nStartIndex * m_nKeyOffset + m_nEndIndex;
-
+    
     //使用开始点x10000+结束点作为key值缓存字典
     _mapPathCacheMap.insert(key, path);
     _mapPathCacheMap.insert(keyRevert, pathRevert);//反向缓存
@@ -304,7 +304,7 @@ MapPath* MapInfo::findPath(){
             }
         vecOpen.clear();
     } while (0);
-
+    
     m_nStartIndex = -1;
     m_nEndIndex = -1;
     
@@ -313,7 +313,7 @@ MapPath* MapInfo::findPath(){
 
 MapPath* MapInfo::getPathFromCache(){
     auto path = _mapPathCacheMap.at(m_nStartIndex * m_nKeyOffset + m_nEndIndex);
-   
+    
     if (path == nullptr) {
         return nullptr;
     }else{
@@ -354,12 +354,12 @@ int MapInfo::GetIndexByDir(int nIndex, int nDir)
             nRow -= 1;
             nCol += 1;
             break;
-
+            
         case 6:     // 左下
             nRow -= 1;
             nCol -= 1;
             break;
-
+            
         case 7:     // 左上
             nRow += 1;
             nCol -= 1;
@@ -369,9 +369,9 @@ int MapInfo::GetIndexByDir(int nIndex, int nDir)
     }
     if (nRow < 0 || nRow >= _mapGridSize.height
         || nCol < 0 || nCol >= _mapGridSize.width)
-    {  
-        return -1;  
-    }  
+    {
+        return -1;
+    }
     return nRow * _mapGridSize.width + nCol;
 }
 
