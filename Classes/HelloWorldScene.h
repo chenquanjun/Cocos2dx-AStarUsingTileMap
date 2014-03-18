@@ -21,18 +21,10 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
     
-    void actionDone1(Node *pSender);
-    
-    void actionDone2(Node *pSender);
-    
-    void actionDone3(Node *pSender);
-    
-    void actionDone4(Node *pSender);
+    void actionDone(Node *pSender);
     
     int findRandomTarget();
-    
-    int _nTarget1, _nTarget2, _nTarget3, _nTarget4;
-    
+
 //    int _nTargetTouch;
     MapInfo *_mapInfo;
     

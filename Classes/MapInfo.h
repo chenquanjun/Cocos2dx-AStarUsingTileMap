@@ -21,7 +21,7 @@ USING_NS_CC;
 //2、如果开始和结束是和缓存相反方向则直接调用缓存的revert版本
 #define MAPINFO_ASTAR_DIRECTION_NUM 4
 #define MAPINFO_MAX_STEP_NUM 10000
-
+#define MAPINFO_MAX_STORE_PATH_SIZE 10000
 
 class MapInfo : public Object{
 public:

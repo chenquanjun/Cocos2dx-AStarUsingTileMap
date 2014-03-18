@@ -34,9 +34,6 @@ bool TestSprite::init(const std::string& fileNameFormat){
 
         //将纹理提前加入精灵帧缓存
         SpriteFrameCache *frameCache = SpriteFrameCache::getInstance();
-//        frameCache->addSpriteFramesWithFile("player1.plist");
-        
-//        Size winSize = Director::getInstance()->getWinSize();
         
         for (int j = 0; j < 4; j++) {
             Vector<SpriteFrame*> animFrames;
@@ -52,11 +49,6 @@ bool TestSprite::init(const std::string& fileNameFormat){
             Animation *animation = Animation::createWithSpriteFrames(animFrames, 0.2f);
             
             int actionTag = j + 1;
-            
-//            Animate *anim = Animate::create(animation);
-//            RepeatForever *repeat = RepeatForever::create(anim);
-//     
-//            repeat->setTag(actionTag);
             
             _playerAnimMap.insert(actionTag, animation);//使用map保存
 
@@ -102,6 +94,5 @@ void TestSprite::playAction(PlayerActionType actionType){
         repeat->setTag((int)actionType);
         _animSprite->runAction(repeat);
     }
-    
-    
 }
+

@@ -280,10 +280,17 @@ MapPath* MapInfo::findPath(){
     int keyRevert = m_nEndIndex * m_nKeyOffset + m_nStartIndex;
     int key = m_nStartIndex * m_nKeyOffset + m_nEndIndex;
     
+    int cacheSize = _mapPathCacheMap.size();
+    
+    if (cacheSize > MAPINFO_MAX_STORE_PATH_SIZE) {
+        _mapPathCacheMap.clear();//2W个大概占15M内存, 1W个6M多内存
+//        CCLOG("RELEASE");
+    }
+    
     //使用开始点x10000+结束点作为key值缓存字典
     _mapPathCacheMap.insert(key, path);
     _mapPathCacheMap.insert(keyRevert, pathRevert);//反向缓存
-    
+
     //此处需要释放
     do {
         for (std::vector<PointNode *>::iterator it = vecClose.begin(); it != vecClose.end(); it ++)
