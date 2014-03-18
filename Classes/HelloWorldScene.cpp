@@ -198,6 +198,10 @@ bool HelloWorld::init()
         //如果不加入此句消息依旧会向下传递
         myListener->setSwallowTouches(true);
         
+        Size mapSize = Size( _mapInfo->getMapGridSize().width * _mapInfo->getPointSize().width, _mapInfo->getMapGridSize().height * _mapInfo->getPointSize().height) ;
+        Size winSize = Director::getInstance()->getWinSize();
+        
+        //touch begin
         myListener->onTouchBegan = [=](Touch* touch,Event* event)
         {
             
@@ -228,6 +232,7 @@ bool HelloWorld::init()
 //            return false;
         };
         
+        //touch moved
         myListener->onTouchMoved = [=](Touch* touch,Event* event)
         {
             //do something
@@ -281,7 +286,31 @@ bool HelloWorld::init()
 
             }
             
-            _mapLayer->stopAllActions();
+            do {//地图层自动调整
+                
+                
+                Point mapPoint = _mapLayer->getPosition();
+                float x = mapPoint.x;
+                float y = mapPoint.y;
+                
+                Point adjustPoint = Point::ZERO;
+                
+                if (x > 0) {
+                    adjustPoint += Point(-x, 0);
+                }else if (x < winSize.width - mapSize.width){
+                    adjustPoint += Point(winSize.width - mapSize.width - x, 0);
+                }
+                
+                if (y > 0) {
+                    adjustPoint += Point(0, -y);
+                }else if (y < winSize.height - mapSize.height){
+                    adjustPoint += Point(0, winSize.height - mapSize.height - y);
+                }
+                _mapLayer->stopAllActions();
+                _mapLayer->runAction(EaseBackOut::create(MoveBy::create(0.5f, adjustPoint)));
+            } while (0);
+            
+            
 //            _mapLayer->runAction(EaseBackOut::create(MoveTo::create(0.5f, Point(0, 0))));
 
         };
