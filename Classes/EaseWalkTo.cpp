@@ -12,7 +12,6 @@
 EaseWalkTo::EaseWalkTo()
 :_pointArr(nullptr),
 _nIndex(0)
-//_actionType(PlayerActionType::Invalid)
 {
     
 }
@@ -65,11 +64,6 @@ void EaseWalkTo::startWithTarget(Node *target)
     {
         if (_pointArr->count() > 0) {
             Point point = _pointArr->getControlPointAtIndex(0);
-//            Point prePoint = _target->getPosition();//test
-//            Point endPoint = _pointArr->getControlPointAtIndex(_pointArr->count() - 1);
-//            if (point.getDistance(prePoint) > 10) {
-//                CCLOG("pre:%.0f, %.0f, now:%.0f, %.0f, end:%.0f, %.0f", prePoint.x, prePoint.y, point.x, point.y, endPoint.x, endPoint.y);
-//            }
             _target->setPosition(point);
         }
         
@@ -102,13 +96,7 @@ void EaseWalkTo::update(float time)
             //最后一点
             Point point = _pointArr->getControlPointAtIndex(index - 1);
             _target->setPosition(point);
-//            CCLOG("final point:%.1f, %.1f", point.x , point.y);
-            
-//            if (_actionType != PlayerActionType::Invalid) {
-//                
-//                _target->stopActionByTag((int)_actionType);
-//            }
-            
+
             TestSprite *isTestSprite = dynamic_cast<TestSprite*>(_target);
             
             if (isTestSprite != nullptr) {

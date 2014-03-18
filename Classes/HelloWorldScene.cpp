@@ -205,30 +205,9 @@ bool HelloWorld::init()
         myListener->onTouchBegan = [=](Touch* touch,Event* event)
         {
             
-//            Point touchPoint = touch->getLocation();
-//            Point firstTouchPoint = touch->getStartLocation();
-//            int mapId = this->_mapInfo->convertPointToId(touch->getLocation());
-//            
-//            Point position = testSprite->getPosition();
-//            int originId = _mapInfo->convertPointToId(position);
-//            
-//            MapPath* pMapPath = _mapInfo->getMapPath(originId, mapId);
-//            
-//            //some check
-//            if (pMapPath != nullptr)
-//            {
-//                PointArray *pointArr1 = pMapPath->getPointArr();
-//                
-//                float duration = 0.2 * pointArr1->count();
-//                
-//                EaseWalkTo *easeWalkTo1 = EaseWalkTo::create(duration, pointArr1);
-//                
-//                testSprite->stopAllActions();
-//                testSprite->runAction(easeWalkTo1);
-//
             _bIsMove = false;
             return true;
-//            }
+
 //            return false;
         };
         

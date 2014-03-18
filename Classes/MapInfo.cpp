@@ -62,14 +62,10 @@ bool MapInfo::init(const std::string& filename){
         float y = dict["y"].asFloat() / _pointSize.height;
         
         int objectId = dict["objectid"].asInt();
-        
 
         int mapId = x + y * _mapGridSize.width;
-        
-//        CCLOG("%f, %f, %i, %i", x, y ,objectId, mapId);
-        
+  
         mapType[mapId] = objectId;//id对应类型
-        
     }
     
     //数组转化成vector保存
@@ -95,9 +91,6 @@ MapPath* MapInfo::getMapPath(int startId, int endId){
         //生成新的path
         path = this->findPath();
     }
-    
-    
-    
     return path;
 }
 
@@ -126,13 +119,11 @@ int MapInfo::convertPointToId(Point point){
     // 8 9 ...
     // 4 5 6 7
     // 0 1 2 3
-//    if (Rect(0, 0, _mapSize.width, _mapSize.height).containsPoint(point)) {
+    if (Rect(0, 0, _mapGridSize.width * _pointSize.width, _mapGridSize.height * _pointSize.height).containsPoint(point)) {
         int x = point.x / _pointSize.width;
         int y = point.y / _pointSize.height;
         mapId = x + y * _mapGridSize.width;
-//    }
-    
-//    CCLOG("point:%f,%f, id:%i", point.x ,point.y, mapId);
+    }
     return mapId;
 }
 
@@ -145,7 +136,6 @@ Point MapInfo::convertIdToPoint(int mapId){
 
         point = Point(x  * _pointSize.width, y * _pointSize.height);
     }
-//    CCLOG("id:%i, point:%f,%f", mapId, point.x ,point.y);
     return point;
 }
 
@@ -269,22 +259,14 @@ MapPath* MapInfo::findPath(){
     pNode = vecClose[vecClose.size() - 1];
     
     PointArray *pathArr = PointArray::create(0);//创建传入的数字没有使用
-    
-//    float pointWidth = _pointSize.width;
-//    float pointHeight = _pointSize.height;
-//    float offsetX = pointWidth * 0.5f;
-//    float offsetY = pointHeight * 0.5f;
-    
+ 
     //此处生成的是逆向的的array
     while (pNode)
     {
-//        int y = pNode->nIndex / (int)_mapGridSize.width; //y坐标
-//        int x = pNode->nIndex - y * _mapGridSize.width; //x坐标
-        
+     
         int mapId = pNode->nIndex;
         Point point = this->convetIdToPointMid(mapId);//map id 转换成 网格中点坐标
-        
-//        Point point = Point(x * pointWidth + offsetX, y * pointHeight + offsetY);//方格中点
+
         pathArr->addControlPoint(point);
         
         pNode = pNode->pParent;//此处变成逆向
@@ -301,9 +283,6 @@ MapPath* MapInfo::findPath(){
     //使用开始点x10000+结束点作为key值缓存字典
     _mapPathCacheMap.insert(key, path);
     _mapPathCacheMap.insert(keyRevert, pathRevert);//反向缓存
-//    CCLOG("cache path:%i, %i", m_nStartIndex, m_nEndIndex);
-    
-    //init
     
     //此处需要释放
     do {
@@ -325,8 +304,7 @@ MapPath* MapInfo::findPath(){
             }
         vecOpen.clear();
     } while (0);
-//    vecClose.clear();
-//    vecOpen.clear();
+
     m_nStartIndex = -1;
     m_nEndIndex = -1;
     
