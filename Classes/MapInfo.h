@@ -81,6 +81,8 @@ private:
     
     ValueVector _mapInfoTypeVec; //传入地图后转化成vector保存
     
+    ValueMapIntKey _mapInfoTypeMap;//根据类型保存在字典里面
+    
     Map<int, MapPath*> _mapPathCacheMap; //已经生成的路径缓存
     
     int m_nKeyOffset;//保存key值的偏移

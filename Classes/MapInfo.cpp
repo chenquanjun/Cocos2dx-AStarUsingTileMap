@@ -99,15 +99,23 @@ PointArray* MapInfo::getPointPath(int startId, int endId){
 }
 
 ValueVector MapInfo::getMapInfoTypeVec(MapInfoType type){
-    ValueVector typeVec;
+    
     int typeNum = (int)type;
-    int i = 0;
-    for (auto& value: _mapInfoTypeVec) {
-        int testNum = value.asInt();
-        if (testNum == typeNum) {
-            typeVec.push_back(Value(i));
+
+    ValueVector typeVec = _mapInfoTypeMap[typeNum].asValueVector();
+
+    if (typeVec.empty()) {
+        
+        int i = 0;
+        for (auto& value: _mapInfoTypeVec) {
+            int testNum = value.asInt();
+            if (testNum == typeNum) {
+                typeVec.push_back(Value(i));
+            }
+            i++;
         }
-        i++;
+        
+        _mapInfoTypeMap[typeNum] = typeVec;
     }
     
     return typeVec;

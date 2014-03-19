@@ -123,41 +123,6 @@ bool HelloWorld::init()
         }
     } while (0);
     
-//    int startId1 = findRandomTarget();
-//    int startId2 = findRandomTarget();
-//    int startId3 = findRandomTarget();
-//    int startId4 = findRandomTarget();
-//    
-//    Point startPoint1 = _mapInfo->convetIdToPointMid(startId1);
-//    Point startPoint2 = _mapInfo->convetIdToPointMid(startId2);
-//    Point startPoint3 = _mapInfo->convetIdToPointMid(startId3);
-//    Point startPoint4 = _mapInfo->convetIdToPointMid(startId4);
-//    
-//    TestSprite *testSprite1 = TestSprite::create("player1_%i_%i.png");
-//    TestSprite *testSprite2 = TestSprite::create("player2_%i_%i.png");
-//    TestSprite *testSprite3 = TestSprite::create("player3_%i_%i.png");
-//    TestSprite *testSprite4 = TestSprite::create("player4_%i_%i.png");
-//    
-//    testSprite1->setPosition(startPoint1);
-//    testSprite2->setPosition(startPoint2);
-//    testSprite3->setPosition(startPoint3);
-//    testSprite4->setPosition(startPoint4);
-//    
-//    testSprite1->setAnchorPoint(Point(0.5, 0));
-//    testSprite2->setAnchorPoint(Point(0.5, 0));
-//    testSprite3->setAnchorPoint(Point(0.5, 0));
-//    testSprite4->setAnchorPoint(Point(0.5, 0));
-//    
-//    _mapLayer->addChild(testSprite1, 200);
-//    _mapLayer->addChild(testSprite2, 200);
-//    _mapLayer->addChild(testSprite3, 200);
-//    _mapLayer->addChild(testSprite4, 200);
-//    
-//    this->actionDone(testSprite1);
-//    this->actionDone(testSprite2);
-//    this->actionDone(testSprite3);
-//    this->actionDone(testSprite4);
-    
     do {//touch
         //touch 控制精灵
         TestSprite *testSprite = TestSprite::create("player1_%i_%i.png");
@@ -197,17 +162,16 @@ bool HelloWorld::init()
             //do something
             Point touchPoint = _mapLayer->convertToNodeSpace(touch->getLocation()); ;
             Point firstTouchPoint = _mapLayer->convertToNodeSpace(touch->getStartLocation());
-            Point preTouchPoint = _mapLayer->convertToNodeSpace(touch->getPreviousLocation());
-            
+    
             if (touchPoint.getDistance(firstTouchPoint) > 5){
                 _bIsMove = true;
 
-                
             }else{
 
             }
             
             if (_bIsMove) {
+                 Point preTouchPoint = _mapLayer->convertToNodeSpace(touch->getPreviousLocation());
                 Point position  = _mapLayer->getPosition();
                 _mapLayer->setPosition(Point(position.x + touchPoint.x - preTouchPoint.x, position.y + touchPoint.y - preTouchPoint.y));
             }
@@ -300,9 +264,9 @@ void HelloWorld::actionDone(Node *pSender){
 }
 
 int HelloWorld::findRandomTarget(){
+    //此处的random方法可集成到mapinfo内就不用每次都生成verctor了
     auto roadVec = _mapInfo->getMapInfoTypeVec(MapInfoType::Road);
     int count = roadVec.size();
-    
     
     float r = CCRANDOM_0_1();
     
@@ -310,7 +274,6 @@ int HelloWorld::findRandomTarget(){
     {
         r = 0;
     }
-    
     
     int randomTarget = r * count;
     
