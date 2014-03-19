@@ -14,19 +14,6 @@
 #include "MapGeneral.h"
 USING_NS_CC;
 
-//地图信息类
-//传入地图创建此类
-//tmx文件读取完相关信息后即释放
-//tmx文件暂时是写死读取的格式，
-//layer用background字段，object用object字段，object里面的精灵用objectid标记类型，类型的枚举见MapGeneral.h
-
-//通过传入开始和结束ID获得路径
-//1、第一次开始寻路算法，生成路径后将路径与相反路径保存下来，以后直接调用；
-//2、暂时只设计了MapInfoType::Block是不可走
-#define MAPINFO_ASTAR_DIRECTION_NUM 4
-#define MAPINFO_MAX_STEP_NUM 10000
-#define MAPINFO_MAX_STORE_PATH_SIZE 10000
-
 class MapInfo : public Object{
 public:
     //使用tmx文件创建
