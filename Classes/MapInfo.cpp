@@ -130,7 +130,7 @@ ValueVector MapInfo::getMapInfoTypeVec(MapInfoType type){
 int MapInfo::getRandomMapIdByType(MapInfoType type){
     int mapId = -1;
     
-    auto roadVec = this->getMapInfoTypeVec(MapInfoType::Road);
+    auto roadVec = this->getMapInfoTypeVec(type);
     
     if (!roadVec.empty()) {
         int count = roadVec.size();

@@ -52,7 +52,7 @@ bool HelloWorld::init()
     frameCache->addSpriteFramesWithFile("player4.plist");
     
     do {//批量生成
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 3; i++) {
         
             auto *testSprite1 = this->createTestSpriteWithFormat("player1_%i_%i.png");
             
@@ -61,7 +61,7 @@ bool HelloWorld::init()
             this->actionDone(testSprite1);
         }
         
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 3; i++) {
             
             auto *testSprite1 = this->createTestSpriteWithFormat("player2_%i_%i.png");
             
@@ -70,7 +70,7 @@ bool HelloWorld::init()
             this->actionDone(testSprite1);
         }
         
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 3; i++) {
             
             auto *testSprite1 = this->createTestSpriteWithFormat("player3_%i_%i.png");
             
@@ -79,7 +79,7 @@ bool HelloWorld::init()
             this->actionDone(testSprite1);
         }
         
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 3; i++) {
             
             auto *testSprite1 = this->createTestSpriteWithFormat("player4_%i_%i.png");
             
@@ -232,7 +232,7 @@ void HelloWorld::adjustMapLayer(bool isAnim){
         }
         
         
-        
+    
     } while (0);
 }
 
