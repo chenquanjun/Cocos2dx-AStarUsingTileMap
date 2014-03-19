@@ -101,7 +101,14 @@ void HelloWorld::setTouchEvent(){
     
     testSprite->runAction(RepeatForever::create(Blink::create(0.5, 3)));
     
+    Size winSize = Director::getInstance()->getWinSize();
+    
     _mapLayer->addChild(testSprite, 200);
+    
+    Point mapPosition = Point(winSize.width * 0.5f - testSprite->getPosition().x , winSize.height * 0.5f - testSprite->getPosition().y);
+    
+    _mapLayer->setPosition(mapPosition);//移动到玩家的位置
+    this->adjustMapLayer(false);
     
     //触摸
     auto dispatcher = Director::getInstance()->getEventDispatcher();
@@ -171,7 +178,7 @@ void HelloWorld::setTouchEvent(){
         }
         
         //触摸结束后自动调整地图防止越界
-        this->adjustMapLayer();
+        this->adjustMapLayer(true);
         
     };
     
@@ -192,7 +199,7 @@ TestSprite* HelloWorld::createTestSpriteWithFormat(std::string fileName){
     return testSprite;
 }
 
-void HelloWorld::adjustMapLayer(){
+void HelloWorld::adjustMapLayer(bool isAnim){
     
     do {//地图层自动调整
         
@@ -216,8 +223,16 @@ void HelloWorld::adjustMapLayer(){
         }else if (y < winSize.height - mapSize.height){
             adjustPoint += Point(0, winSize.height - mapSize.height - y);
         }
+        
         _mapLayer->stopAllActions();
-        _mapLayer->runAction(EaseBackOut::create(MoveBy::create(0.5f, adjustPoint)));
+        if (isAnim) {
+            _mapLayer->runAction(EaseBackOut::create(MoveBy::create(0.5f, adjustPoint)));
+        }else{
+            _mapLayer->setPosition(_mapLayer->getPosition() + adjustPoint);
+        }
+        
+        
+        
     } while (0);
 }
 

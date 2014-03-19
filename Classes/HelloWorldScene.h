@@ -27,7 +27,7 @@ private:
     void actionDone(Node *pSender);
     
     //地图自动调整
-    void adjustMapLayer();
+    void adjustMapLayer(bool isAnim);
     
     //创建测试精灵工厂
     TestSprite* createTestSpriteWithFormat(std::string fileName);
