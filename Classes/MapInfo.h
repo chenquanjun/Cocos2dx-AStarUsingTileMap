@@ -35,13 +35,23 @@ public:
     //获得相应类型的信息对应表
     ValueVector getMapInfoTypeVec(MapInfoType type);
     
+    //根据类型获得随机mapId
+    int getRandomMapIdByType(MapInfoType type);
+    
+    //根据类型获得随机地图网格的点
+    Point getRandomPointByType(MapInfoType type);
+    
+    //根据类型获得随机地图网格的中点
+    Point getRandomPointMidByType(MapInfoType type);
+    
+    //把点转换成mapId
     int convertPointToId(Point point);
     
     //把mapid转换成点坐标(网格的左下角)
     Point convertIdToPoint(int mapId);
     
     //把mapid转换成点坐标(网格中心，适合精灵使用)
-    Point convetIdToPointMid(int mapId);
+    Point convertIdToPointMid(int mapId);
     
     //地图大小(PS:此处的大小是网格大小)
     CC_SYNTHESIZE_READONLY(Size, _mapGridSize, MapGridSize);

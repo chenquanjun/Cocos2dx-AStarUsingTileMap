@@ -1,5 +1,5 @@
 #include "HelloWorldScene.h"
-#include "TestSprite.h"
+
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -26,26 +26,26 @@ bool HelloWorld::init()
     {
         return false;
     }
-    //随机种子
-    srand((unsigned)time(NULL));
 
     //地图layer
     _mapLayer = Layer::create();
     this->addChild(_mapLayer);
     
 
+    auto tmxFileName = "map3.tmx";
+    
     //显示地图用
-    auto map = TMXTiledMap::create("map3.tmx");
+    auto map = TMXTiledMap::create(tmxFileName);
     _mapLayer->addChild(map);
  
     //创建地图信息
-    auto pMapInfo = MapInfo::create("map3.tmx");
+    auto pMapInfo = MapInfo::create(tmxFileName);
     _mapInfo = pMapInfo;
     pMapInfo->retain();
     
 
     //将纹理提前加入精灵帧缓存
-    SpriteFrameCache *frameCache = SpriteFrameCache::getInstance();
+    auto *frameCache = SpriteFrameCache::getInstance();
     frameCache->addSpriteFramesWithFile("player1.plist");
     frameCache->addSpriteFramesWithFile("player2.plist");
     frameCache->addSpriteFramesWithFile("player3.plist");
@@ -53,89 +53,50 @@ bool HelloWorld::init()
     
     do {//批量生成
         for (int i = 0; i < 20; i++) {
-            int startId1 = findRandomTarget();
+        
+            auto *testSprite1 = this->createTestSpriteWithFormat("player1_%i_%i.png");
             
-            Point startPoint1 = _mapInfo->convetIdToPointMid(startId1);
+            _mapLayer->addChild(testSprite1, 200);
             
-            TestSprite *testSprite1 = TestSprite::create("player1_%i_%i.png");
+            this->actionDone(testSprite1);
+        }
+        
+        for (int i = 0; i < 20; i++) {
             
-            testSprite1->setPosition(startPoint1);
+            auto *testSprite1 = this->createTestSpriteWithFormat("player2_%i_%i.png");
             
-            testSprite1->setAnchorPoint(Point(0.5, 0));
+            _mapLayer->addChild(testSprite1, 200);
+            
+            this->actionDone(testSprite1);
+        }
+        
+        for (int i = 0; i < 20; i++) {
+            
+            auto *testSprite1 = this->createTestSpriteWithFormat("player3_%i_%i.png");
+            
+            _mapLayer->addChild(testSprite1, 200);
+            
+            this->actionDone(testSprite1);
+        }
+        
+        for (int i = 0; i < 20; i++) {
+            
+            auto *testSprite1 = this->createTestSpriteWithFormat("player4_%i_%i.png");
+            
+            _mapLayer->addChild(testSprite1, 200);
+            
+            this->actionDone(testSprite1);
+        }
+    } while (0);
 
-            _mapLayer->addChild(testSprite1, 200);
-            
-            this->actionDone(testSprite1);
-        }
-    } while (0);
-    
-    do {//批量生成
-        for (int i = 0; i < 20; i++) {
-            int startId1 = findRandomTarget();
-            
-            Point startPoint1 = _mapInfo->convetIdToPointMid(startId1);
-            
-            TestSprite *testSprite1 = TestSprite::create("player2_%i_%i.png");
-            
-            testSprite1->setPosition(startPoint1);
-            
-            testSprite1->setAnchorPoint(Point(0.5, 0));
-            
-            _mapLayer->addChild(testSprite1, 200);
-            
-            this->actionDone(testSprite1);
-        }
-    } while (0);
-    
-    do {//批量生成
-        for (int i = 0; i < 20; i++) {
-            int startId1 = findRandomTarget();
-            
-            Point startPoint1 = _mapInfo->convetIdToPointMid(startId1);
-            
-            TestSprite *testSprite1 = TestSprite::create("player3_%i_%i.png");
-            
-            testSprite1->setPosition(startPoint1);
-            
-            testSprite1->setAnchorPoint(Point(0.5, 0));
-            
-            _mapLayer->addChild(testSprite1, 200);
-            
-            this->actionDone(testSprite1);
-        }
-    } while (0);
-    
-    do {//批量生成
-        for (int i = 0; i < 20; i++) {
-            int startId1 = findRandomTarget();
-            
-            Point startPoint1 = _mapInfo->convetIdToPointMid(startId1);
-            
-            TestSprite *testSprite1 = TestSprite::create("player4_%i_%i.png");
-            
-            testSprite1->setPosition(startPoint1);
-            
-            testSprite1->setAnchorPoint(Point(0.5, 0));
-            
-            _mapLayer->addChild(testSprite1, 200);
-            
-            this->actionDone(testSprite1);
-        }
-    } while (0);
     
     do {//touch
         //touch 控制精灵
-        TestSprite *testSprite = TestSprite::create("player1_%i_%i.png");
-        testSprite->setAnchorPoint(Point(0.5, 0));
+        auto *testSprite = this->createTestSpriteWithFormat("player1_%i_%i.png");
+
         testSprite->runAction(RepeatForever::create(Blink::create(0.5, 3)));
         
         _mapLayer->addChild(testSprite, 200);
-        
-        int targetId = this->findRandomTarget();
-        
-        Point initPosition = _mapInfo->convetIdToPointMid(targetId);
-        
-        testSprite->setPosition(initPosition);
         
         //触摸
         auto dispatcher = Director::getInstance()->getEventDispatcher();
@@ -143,25 +104,20 @@ bool HelloWorld::init()
         
         //如果不加入此句消息依旧会向下传递
         myListener->setSwallowTouches(true);
-        
-        Size mapSize = Size( _mapInfo->getMapGridSize().width * _mapInfo->getPointSize().width, _mapInfo->getMapGridSize().height * _mapInfo->getPointSize().height) ;
-        Size winSize = Director::getInstance()->getWinSize();
-        
+
         //touch begin
         myListener->onTouchBegan = [=](Touch* touch,Event* event)
         {
             
             _bIsMove = false;
             return true;
-//            return false;
         };
         
         //touch moved
         myListener->onTouchMoved = [=](Touch* touch,Event* event)
         {
-            //do something
-            Point touchPoint = _mapLayer->convertToNodeSpace(touch->getLocation()); ;
-            Point firstTouchPoint = _mapLayer->convertToNodeSpace(touch->getStartLocation());
+            auto touchPoint = _mapLayer->convertToNodeSpace(touch->getLocation()); ;
+            auto firstTouchPoint = _mapLayer->convertToNodeSpace(touch->getStartLocation());
     
             if (touchPoint.getDistance(firstTouchPoint) > 5){
                 _bIsMove = true;
@@ -171,8 +127,8 @@ bool HelloWorld::init()
             }
             
             if (_bIsMove) {
-                 Point preTouchPoint = _mapLayer->convertToNodeSpace(touch->getPreviousLocation());
-                Point position  = _mapLayer->getPosition();
+                auto preTouchPoint = _mapLayer->convertToNodeSpace(touch->getPreviousLocation());
+                auto position  = _mapLayer->getPosition();
                 _mapLayer->setPosition(Point(position.x + touchPoint.x - preTouchPoint.x, position.y + touchPoint.y - preTouchPoint.y));
             }
         };
@@ -180,26 +136,26 @@ bool HelloWorld::init()
         //touch ended
         myListener->onTouchEnded = [=](Touch* touch,Event* event)
         {  
-            //do something
             
-            Point touchPoint = _mapLayer->convertToNodeSpace(touch->getLocation()); ;
+            auto touchPoint = _mapLayer->convertToNodeSpace(touch->getLocation()); ;
             
             if (!_bIsMove) {
-                int mapId = this->_mapInfo->convertPointToId(touchPoint);
+                //根据点击坐标转换成mapId
+                auto mapId = this->_mapInfo->convertPointToId(touchPoint);
                 
-                Point position = testSprite->getPosition();
-                int originId = _mapInfo->convertPointToId(position);
+                auto position = testSprite->getPosition();
+                auto originId = _mapInfo->convertPointToId(position);
                 
-                MapPath* pMapPath = _mapInfo->getMapPath(originId, mapId);
-                
-                //some check
+                //生成路径
+                auto* pMapPath = _mapInfo->getMapPath(originId, mapId);
+
                 if (pMapPath != nullptr)
                 {
-                    PointArray *pointArr1 = pMapPath->getPointArr();
+                    auto *pointArr1 = pMapPath->getPointArr();
                     
-                    float duration = 0.2 * pointArr1->count();
+                    auto duration = 0.2 * pointArr1->count();
                     
-                    EaseWalkTo *easeWalkTo1 = EaseWalkTo::create(duration, pointArr1);
+                    auto *easeWalkTo1 = EaseWalkTo::create(duration, pointArr1);
                     easeWalkTo1->setTag(99);
                     testSprite->stopActionByTag(99);
                     testSprite->runAction(easeWalkTo1);
@@ -209,28 +165,8 @@ bool HelloWorld::init()
 
             }
             
-            do {//地图层自动调整
-     
-                Point mapPoint = _mapLayer->getPosition();
-                float x = mapPoint.x;
-                float y = mapPoint.y;
-                
-                Point adjustPoint = Point::ZERO;
-                
-                if (x > 0) {
-                    adjustPoint += Point(-x, 0);
-                }else if (x < winSize.width - mapSize.width){
-                    adjustPoint += Point(winSize.width - mapSize.width - x, 0);
-                }
-                
-                if (y > 0) {
-                    adjustPoint += Point(0, -y);
-                }else if (y < winSize.height - mapSize.height){
-                    adjustPoint += Point(0, winSize.height - mapSize.height - y);
-                }
-                _mapLayer->stopAllActions();
-                _mapLayer->runAction(EaseBackOut::create(MoveBy::create(0.5f, adjustPoint)));
-            } while (0);
+            //触摸结束后自动调整地图防止越界
+            this->adjustMapLayer();
 
         };
         
@@ -240,8 +176,49 @@ bool HelloWorld::init()
     return true;
 }
 
+TestSprite* HelloWorld::createTestSpriteWithFormat(std::string fileName){
+    auto startPoint = _mapInfo->getRandomPointMidByType(MapInfoType::Road);
+    
+    auto *testSprite = TestSprite::create(fileName.c_str());
+    
+    testSprite->setPosition(startPoint);
+    
+    testSprite->setAnchorPoint(Point(0.5, 0));
+    
+    return testSprite;
+}
+
+void HelloWorld::adjustMapLayer(){
+    
+    do {//地图层自动调整
+        
+        Size mapSize = Size( _mapInfo->getMapGridSize().width * _mapInfo->getPointSize().width, _mapInfo->getMapGridSize().height * _mapInfo->getPointSize().height) ;
+        Size winSize = Director::getInstance()->getWinSize();
+        
+        Point mapPoint = _mapLayer->getPosition();
+        float x = mapPoint.x;
+        float y = mapPoint.y;
+        
+        Point adjustPoint = Point::ZERO;
+        
+        if (x > 0) {
+            adjustPoint += Point(-x, 0);
+        }else if (x < winSize.width - mapSize.width){
+            adjustPoint += Point(winSize.width - mapSize.width - x, 0);
+        }
+        
+        if (y > 0) {
+            adjustPoint += Point(0, -y);
+        }else if (y < winSize.height - mapSize.height){
+            adjustPoint += Point(0, winSize.height - mapSize.height - y);
+        }
+        _mapLayer->stopAllActions();
+        _mapLayer->runAction(EaseBackOut::create(MoveBy::create(0.5f, adjustPoint)));
+    } while (0);
+}
+
 void HelloWorld::actionDone(Node *pSender){
-    int newTarget = findRandomTarget();
+    int newTarget = _mapInfo->getRandomMapIdByType(MapInfoType::Road);
     
     int oldTarget = _mapInfo->convertPointToId(pSender->getPosition());
     
@@ -263,32 +240,3 @@ void HelloWorld::actionDone(Node *pSender){
     pSender->runAction(seq);
 }
 
-int HelloWorld::findRandomTarget(){
-    //此处的random方法可集成到mapinfo内就不用每次都生成verctor了
-    auto roadVec = _mapInfo->getMapInfoTypeVec(MapInfoType::Road);
-    int count = roadVec.size();
-    
-    float r = CCRANDOM_0_1();
-    
-    if (r == 1) // to prevent from accessing data-arr[data->num], out of range.
-    {
-        r = 0;
-    }
-    
-    int randomTarget = r * count;
-    
-    auto value = roadVec.at(randomTarget);
-    
-    int newTarget = value.asInt();
-    
-    return newTarget;
-}
-
-void HelloWorld::menuCloseCallback(Object* pSender)
-{
-    Director::getInstance()->end();
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
-#endif
-}

@@ -13,23 +13,14 @@ MapInfo::MapInfo(void){
     _pointSize = Size(0, 0);
     
     m_nKeyOffset = 10000;
+    
+    //随机种子
+    srand((unsigned)time(NULL));
 }
 
 MapInfo::~MapInfo(void){
     
 }
-
-MapInfo* MapInfo::create(const std::string& filename){
-    MapInfo *pMapInfo = new MapInfo();
-    if (pMapInfo && pMapInfo->init(filename))
-    {
-        pMapInfo->autorelease();
-        return pMapInfo;
-    }
-    CC_SAFE_DELETE(pMapInfo);
-    return nullptr;
-}
-
 
 bool MapInfo::init(const std::string& filename){
     
@@ -81,6 +72,21 @@ bool MapInfo::init(const std::string& filename){
     return true;
 }
 
+#pragma -mark- ------Public Method------
+
+MapInfo* MapInfo::create(const std::string& filename){
+    MapInfo *pMapInfo = new MapInfo();
+    if (pMapInfo && pMapInfo->init(filename))
+    {
+        pMapInfo->autorelease();
+        return pMapInfo;
+    }
+    CC_SAFE_DELETE(pMapInfo);
+    return nullptr;
+}
+
+#pragma -mark- Get Method
+
 MapPath* MapInfo::getMapPath(int startId, int endId){
     m_nStartIndex = startId;
     m_nEndIndex = endId;
@@ -121,6 +127,45 @@ ValueVector MapInfo::getMapInfoTypeVec(MapInfoType type){
     return typeVec;
 }
 
+int MapInfo::getRandomMapIdByType(MapInfoType type){
+    int mapId = -1;
+    
+    auto roadVec = this->getMapInfoTypeVec(MapInfoType::Road);
+    
+    if (!roadVec.empty()) {
+        int count = roadVec.size();
+        
+        float r = CCRANDOM_0_1();
+        
+        if (r == 1) // to prevent from accessing data-arr[data->num], out of range.
+        {
+            r = 0;
+        }
+        
+        int randomTarget = r * count;
+        
+        auto value = roadVec.at(randomTarget);
+        
+        mapId = value.asInt();
+    }else{
+        log("Warning: map id invalid, error type or type didnot exist");
+    }
+    
+    return mapId;
+}
+
+Point MapInfo::getRandomPointByType(MapInfoType type){
+    int mapId = getRandomMapIdByType(type);
+    return convertIdToPoint(mapId);
+}
+
+Point MapInfo::getRandomPointMidByType(MapInfoType type){
+    int mapId = getRandomMapIdByType(type);
+    return convertIdToPointMid(mapId);
+}
+
+#pragma -mark- Convert Method
+
 int MapInfo::convertPointToId(Point point){
     int mapId = -1;
     //在大地图内, 此处的转换是按照左下角往右扩展，然后再往上扩展形式计算，例如
@@ -147,11 +192,14 @@ Point MapInfo::convertIdToPoint(int mapId){
     return point;
 }
 
-Point MapInfo::convetIdToPointMid(int mapId){
+Point MapInfo::convertIdToPointMid(int mapId){
     Point point = convertIdToPoint(mapId);
     return Point(point.x + _pointSize.width * 0.5f, point.y + _pointSize.height * 0.5f);
 }
 
+#pragma -mark- ------Private Method------
+
+#pragma -mark- find Path Method
 
 MapPath* MapInfo::findPath(){
     std::vector<PointNode*> vecClose;
@@ -273,7 +321,7 @@ MapPath* MapInfo::findPath(){
     {
         
         int mapId = pNode->nIndex;
-        Point point = this->convetIdToPointMid(mapId);//map id 转换成 网格中点坐标
+        Point point = this->convertIdToPointMid(mapId);//map id 转换成 网格中点坐标
         
         pathArr->addControlPoint(point);
         
@@ -336,6 +384,8 @@ MapPath* MapInfo::getPathFromCache(){
     }
     
 }
+
+#pragma -mark- A Star Method
 
 int MapInfo::GetIndexByDir(int nIndex, int nDir)
 {
