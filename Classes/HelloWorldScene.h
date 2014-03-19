@@ -19,13 +19,21 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
     
+private:
+    //触摸事件
+    void setTouchEvent();
+    
+    //精灵自动寻路结束
     void actionDone(Node *pSender);
     
+    //地图自动调整
     void adjustMapLayer();
     
+    //创建测试精灵工厂
     TestSprite* createTestSpriteWithFormat(std::string fileName);
     
-//    int _nTargetTouch;
+private:
+    
     MapInfo *_mapInfo;
     
     Layer *_mapLayer;

@@ -89,91 +89,95 @@ bool HelloWorld::init()
         }
     } while (0);
 
-    
-    do {//touch
-        //touch 控制精灵
-        auto *testSprite = this->createTestSpriteWithFormat("player1_%i_%i.png");
+    //处理触摸事件
+    this->setTouchEvent();
 
-        testSprite->runAction(RepeatForever::create(Blink::create(0.5, 3)));
-        
-        _mapLayer->addChild(testSprite, 200);
-        
-        //触摸
-        auto dispatcher = Director::getInstance()->getEventDispatcher();
-        auto myListener = EventListenerTouchOneByOne::create();
-        
-        //如果不加入此句消息依旧会向下传递
-        myListener->setSwallowTouches(true);
-
-        //touch begin
-        myListener->onTouchBegan = [=](Touch* touch,Event* event)
-        {
-            
-            _bIsMove = false;
-            return true;
-        };
-        
-        //touch moved
-        myListener->onTouchMoved = [=](Touch* touch,Event* event)
-        {
-            auto touchPoint = _mapLayer->convertToNodeSpace(touch->getLocation()); ;
-            auto firstTouchPoint = _mapLayer->convertToNodeSpace(touch->getStartLocation());
-    
-            if (touchPoint.getDistance(firstTouchPoint) > 5){
-                _bIsMove = true;
-
-            }else{
-
-            }
-            
-            if (_bIsMove) {
-                auto preTouchPoint = _mapLayer->convertToNodeSpace(touch->getPreviousLocation());
-                auto position  = _mapLayer->getPosition();
-                _mapLayer->setPosition(Point(position.x + touchPoint.x - preTouchPoint.x, position.y + touchPoint.y - preTouchPoint.y));
-            }
-        };
-        
-        //touch ended
-        myListener->onTouchEnded = [=](Touch* touch,Event* event)
-        {  
-            
-            auto touchPoint = _mapLayer->convertToNodeSpace(touch->getLocation()); ;
-            
-            if (!_bIsMove) {
-                //根据点击坐标转换成mapId
-                auto mapId = this->_mapInfo->convertPointToId(touchPoint);
-                
-                auto position = testSprite->getPosition();
-                auto originId = _mapInfo->convertPointToId(position);
-                
-                //生成路径
-                auto* pMapPath = _mapInfo->getMapPath(originId, mapId);
-
-                if (pMapPath != nullptr)
-                {
-                    auto *pointArr1 = pMapPath->getPointArr();
-                    
-                    auto duration = 0.2 * pointArr1->count();
-                    
-                    auto *easeWalkTo1 = EaseWalkTo::create(duration, pointArr1);
-                    easeWalkTo1->setTag(99);
-                    testSprite->stopActionByTag(99);
-                    testSprite->runAction(easeWalkTo1);
-                    
-                }
-            }else{
-
-            }
-            
-            //触摸结束后自动调整地图防止越界
-            this->adjustMapLayer();
-
-        };
-        
-        dispatcher->addEventListenerWithSceneGraphPriority(myListener, this);
-        
-    } while (0);
     return true;
+}
+
+void HelloWorld::setTouchEvent(){
+    //touch 控制精灵
+    auto *testSprite = this->createTestSpriteWithFormat("player1_%i_%i.png");
+    
+    testSprite->runAction(RepeatForever::create(Blink::create(0.5, 3)));
+    
+    _mapLayer->addChild(testSprite, 200);
+    
+    //触摸
+    auto dispatcher = Director::getInstance()->getEventDispatcher();
+    auto myListener = EventListenerTouchOneByOne::create();
+    
+    //如果不加入此句消息依旧会向下传递
+    myListener->setSwallowTouches(true);
+    
+    //-----touch began-----
+    myListener->onTouchBegan = [=](Touch* touch,Event* event)
+    {
+        
+        _bIsMove = false;
+        return true;
+    };
+    
+    //-----touch moved-----
+    myListener->onTouchMoved = [=](Touch* touch,Event* event)
+    {
+        auto touchPoint = _mapLayer->convertToNodeSpace(touch->getLocation()); ;
+        auto firstTouchPoint = _mapLayer->convertToNodeSpace(touch->getStartLocation());
+        
+        if (touchPoint.getDistance(firstTouchPoint) > 5){
+            _bIsMove = true;
+            
+        }else{
+            
+        }
+        
+        if (_bIsMove) {
+            auto preTouchPoint = _mapLayer->convertToNodeSpace(touch->getPreviousLocation());
+            auto position  = _mapLayer->getPosition();
+            _mapLayer->setPosition(Point(position.x + touchPoint.x - preTouchPoint.x, position.y + touchPoint.y - preTouchPoint.y));
+        }
+    };
+    
+    //-----touch ended-----
+    myListener->onTouchEnded = [=](Touch* touch,Event* event)
+    {
+        
+        auto touchPoint = _mapLayer->convertToNodeSpace(touch->getLocation()); ;
+        
+        if (!_bIsMove) {
+            //根据点击坐标转换成mapId
+            auto mapId = this->_mapInfo->convertPointToId(touchPoint);
+            
+            auto position = testSprite->getPosition();
+            auto originId = _mapInfo->convertPointToId(position);
+            
+            //生成路径
+            auto* pMapPath = _mapInfo->getMapPath(originId, mapId);
+            
+            if (pMapPath != nullptr)
+            {
+                auto *pointArr1 = pMapPath->getPointArr();
+                
+                auto duration = 0.2 * pointArr1->count();
+                
+                auto *easeWalkTo1 = EaseWalkTo::create(duration, pointArr1);
+                easeWalkTo1->setTag(99);
+                testSprite->stopActionByTag(99);
+                testSprite->runAction(easeWalkTo1);
+                
+            }
+        }else{
+            
+        }
+        
+        //触摸结束后自动调整地图防止越界
+        this->adjustMapLayer();
+        
+    };
+    
+    //监听事件
+    dispatcher->addEventListenerWithSceneGraphPriority(myListener, this);
+ 
 }
 
 TestSprite* HelloWorld::createTestSpriteWithFormat(std::string fileName){
